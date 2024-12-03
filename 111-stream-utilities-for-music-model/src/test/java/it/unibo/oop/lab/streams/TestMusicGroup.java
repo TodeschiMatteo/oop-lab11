@@ -20,6 +20,7 @@ import static java.util.stream.Collectors.toList;
  *
  *
  */
+
 final class TestMusicGroup {
 
     private static final String UNTITLED = "untitled";

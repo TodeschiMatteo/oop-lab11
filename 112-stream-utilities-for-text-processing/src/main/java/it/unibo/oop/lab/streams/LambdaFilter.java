@@ -15,6 +15,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 /**
  * Modify this small program adding new filters.
  * Realize this exercise using as much as possible the Stream library.
@@ -33,12 +36,24 @@ import javax.swing.JTextArea;
 public final class LambdaFilter extends JFrame {
 
     private static final long serialVersionUID = 1760990730218643730L;
+    private static final String REGEX = "[ \n]+";
 
     private enum Command {
         /**
          * Commands.
          */
-        IDENTITY("No modifications", Function.identity());
+        IDENTITY("No modifications", Function.identity()),
+        TOLOWER("Covert to Lower Case", String::toLowerCase),
+        NUMBER_COUNT("Count the number of lines", c -> Integer.toString(c.length())),
+        LINES_COUNT("Count the number of lines", c -> Long.toString(c.chars().filter(i -> i == '\n').count())),
+        ORDER("List all the words in alphabetical order", c -> 
+            Arrays.stream(c.split(REGEX))
+            .sorted().
+            collect(Collectors.joining("\n"))),
+        WORD_COUNTER("Write the count for each word", c -> 
+            Arrays.stream(c.split(REGEX))
+            .map(s -> s + " -> " + s.length() + "\n")
+            .collect(Collectors.joining()));
 
         private final String commandName;
         private final Function<String, String> fun;
@@ -60,7 +75,7 @@ public final class LambdaFilter extends JFrame {
 
     private LambdaFilter() {
         super("Lambda filter GUI");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         final JPanel panel1 = new JPanel();
         final LayoutManager layout = new BorderLayout();
         panel1.setLayout(layout);
