@@ -41,7 +41,7 @@ class TestMatrix {
     void testBasic() {
         double sum = 0;
         final double[][] matrix = new double[SIZE][SIZE];
-        for (double[] d : matrix) {
+        for (final double[] d : matrix) {
             for (int i = 0; i < SIZE; i++) {
                 d[i] = i;
                 sum += i;
@@ -50,14 +50,18 @@ class TestMatrix {
         System.out.println("BTW: the sum with " + SIZE + "*" + SIZE + " elements is: " + sum);
         long time;
         for (final int threads : new int[] { 1, 2, 3, 8, 16, 32, 100 }) {
-            final SumMatrix sumList = null; // new MultiThreadedSumMatrix(threads);
+            final SumMatrix sumListWorkers = new MultiThreadedSumMatrixWithWorkersStream(threads);
+            final SumMatrix sumListStrams = new MultiThreadedSumMatrixWithDoubleStream(threads);
             time = System.nanoTime();
-            assertEquals(sum, sumList.sum(matrix), EXPECTED_DELTA);
-            time = System.nanoTime() - time;
+            assertEquals(sum, sumListWorkers.sum(matrix), EXPECTED_DELTA);
+            final var timer1 = System.nanoTime() - time;
+            time = System.nanoTime();
+            assertEquals(sum, sumListStrams.sum(matrix), EXPECTED_DELTA);
+            final var timer2 = System.nanoTime() - time;
             System.out.println("Tried with " + threads + " thread"
-                    + (threads == 1 ? "" : "s") + ": "
-                    + TimeUnit.NANOSECONDS.toMillis(time) + MSEC);
+                    + (threads == 1 ? "" : "s") + ": [WorkerStream -> "
+                    + TimeUnit.NANOSECONDS.toMillis(timer1) + MSEC + "]" + " [DoubleStreams -> "
+                    + TimeUnit.NANOSECONDS.toMillis(timer2) + MSEC + "]");
         }
     }
-
 }
