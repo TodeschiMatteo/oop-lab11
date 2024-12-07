@@ -25,6 +25,9 @@ public final class ConcurrentGUI extends JFrame {
     private final JButton down = new JButton("down");
     private final JButton stop = new JButton("stop");
 
+    /**
+     * Builds a new CGUI.
+     */
     public ConcurrentGUI() {
         super();
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -52,7 +55,7 @@ public final class ConcurrentGUI extends JFrame {
         stop.addActionListener((e) -> agent.stopCounting());
     }
 
-    private class Agent implements Runnable {
+    private final class Agent implements Runnable {
         /*
          * Stop is volatile to ensure visibility. Look at:
          * 
@@ -93,10 +96,16 @@ public final class ConcurrentGUI extends JFrame {
             this.stop = true;
         }
 
+        /**
+         * External command to set upcounting.
+         */
         public void upCounting() {
             this.descending = false;
         }
 
+        /**
+         * External command to set downcounting.
+         */
         public void downCounting() {
             this.descending = true;
         }
